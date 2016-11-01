@@ -1,1 +1,20 @@
+-------
+vim configuration [through edit ~/.vimrc]
+-------
+1. let vi show/hide line number?
+set number 
+set nonumber
 
+2. let tab occupy 4 spaces?
+set tabstop=4
+
+3. let tab be auto replaced with 4 spaces?
+set expandtab
+
+-------
+vim usage
+-------
+1. jump to inner block pair and func block pair?
+inner block pair: [{ ]}
+function block pair: [[ ]]
+ref: http://vim.wikia.com/wiki/Jumping_to_the_start_and_end_of_a_code_block
