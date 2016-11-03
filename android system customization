@@ -1,6 +1,22 @@
 -------
 settings.apk
 -------
-1. how to custom Preference left margin programmatically?
+1. how to custom Preference(icon) left margin programmatically?
 since Preference's layout is in framework layer, use Preference.onBindView() get child view by findViewById and set properties.
-code segment:
+code segment: [AccessPoint.java]
+  protected void onBindView(View view) {
+    super.onBindView(view);
+    ImageView iv = (ImageView) view.findViewById(com.android.internal.R.id.icon);
+    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+      LinearLayout.LayoutParams.WRAP_CONTENT,
+      LinearLayout.LayoutParams.WRAP_CONTENT
+    );
+    params.setMarginStart(30);
+    iv.setLayoutParams(params);
+    ....
+  }
+note: Prefernce default layout xml can be found through: 
+frameworks/base/core/java/android/preference/Preference.java -> 
+mLayoutResId -> 
+com.android.internal.R.layout.preference -> 
+frameworks/base/core/res/res/layout/preference.xml
