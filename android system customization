@@ -20,3 +20,7 @@ frameworks/base/core/java/android/preference/Preference.java ->
 mLayoutResId -> 
 com.android.internal.R.layout.preference -> 
 frameworks/base/core/res/res/layout/preference.xml
+
+2. how to hide optionmenu in actionbar?
+call MenuItem.setVisible(false) on each entry.
+ref: http://stackoverflow.com/questions/23178663/hide-show-action-bar-option-menu-item-for-different-fragments
