@@ -1,0 +1,6 @@
+-------
+settings.apk
+-------
+1. how to custom Preference left margin programmatically?
+since Preference's layout is in framework layer, use Preference.onBindView() get child view by findViewById and set properties.
+code segment:
