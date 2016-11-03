@@ -10,3 +10,4 @@ method b:
 A=abc_def_ghi
 B=`echo $A | cut -d '_' -f 2`
 echo A=$A, B=$B
+ref: http://stackoverflow.com/questions/428109/extract-substring-in-bash
