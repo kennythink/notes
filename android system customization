@@ -24,3 +24,11 @@ frameworks/base/core/res/res/layout/preference.xml
 2. how to hide optionmenu in actionbar?
 call MenuItem.setVisible(false) on each entry.
 ref: http://stackoverflow.com/questions/23178663/hide-show-action-bar-option-menu-item-for-different-fragments
+
+3. how to enable crash log backtrace after with "Suppressing debuggerd output because prctl(PR_GET_DUMPABLE)==0"?
+reason: running process without dump permission after excute with suid thing.
+method 1: add android:debuggable="true" in AndroidManifest.xml, if suspect an app related.
+method 2: echo 2 > /proc/sys/fc/suid_dumpable, if device being rooted.
+ref: 
+http://unix.stackexchange.com/questions/15531/how-come-no-core-dump-is-create-when-an-application-has-suid-set
+http://blog.csdn.net/lanxingfeifei/article/details/52101461
