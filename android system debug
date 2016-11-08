@@ -19,6 +19,10 @@ target directory is : /data/tombstones/*, need root access permission.
 decrypt crash backtrace to filename and specific code line?
 a. must sure there is a debug AOSP build for symbols, and the tombstone was generated with this AOSP build image.
 b. install ndk and run command like: ndk-stack -sym $symbols_dir -dump $tombstone_file . optionally can use addr2line.
+fatal crash without backtrace?
+expect to find one line "Suppressing debugerd output because prctl(PR_GET_DUMPABLE)==0"
+method a: add "android:debuggable="true" in app AndroidManifest.xml
+method b: call prctl(PR_SET_DUMPABLE, 1) in problematic native code
 ref:
 https://source.android.com/devices/tech/debug/
 http://bytesthink.com/blog/?p=133
