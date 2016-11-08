@@ -1,0 +1,25 @@
+1. tools / dumpsys
+The dumpsys tool runs on the device and provides information about the status of system services.
+general commands:
+show all available subcmds?
+> adb shell dumpsys -l
+show memory info of an app?
+> adb shell dumpsys meminfo 'com.android.browser'
+show activity related info?
+> adb shell dumpsys activity -h 
+> adb shell dumpsys activity broadcasts # show all system broadcasts
+ref:
+https://source.android.com/devices/tech/debug/dumpsys.html
+http://stackoverflow.com/questions/11201659/whats-the-android-adb-shell-dumpsys-tool-and-what-are-its-benefits
+
+2. log / tombstone
+The tombstone contains the same information as the crash dump, plus a few extras. For example, it includes backtraces for all threads (not just the crashing thread), the floating point registers, raw stack dumps, and memory dumps around the addresses in registers.
+debuggerd will keep up to 10 tombstones, cycling through the numbers 00 to 09 and overwriting existing tombstones as necessary.
+target directory is : /data/tombstones/*, need root access permission.
+decrypt crash backtrace to filename and specific code line?
+a. must sure there is a debug AOSP build for symbols, and the tombstone was generated with this AOSP build image.
+b. install ndk and run command like: ndk-stack -sym $symbols_dir -dump $tombstone_file . optionally can use addr2line.
+ref:
+https://source.android.com/devices/tech/debug/
+http://bytesthink.com/blog/?p=133
+https://developer.android.com/ndk/downloads/index.html
