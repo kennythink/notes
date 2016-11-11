@@ -29,3 +29,14 @@ https://source.android.com/devices/tech/debug/
 http://bytesthink.com/blog/?p=133
 https://developer.android.com/ndk/downloads/index.html
 http://blog.sina.com.cn/s/blog_702c2db50102vc2h.html
+
+3. system information detect
+display resolution / density?
+resolution: 
+    > adb shell wm size
+    > adb shell dumpsys window displays
+density: dp = (density / 160 ) * px
+    > adb shell wm density
+    > adb shell getprop | findstr lcd
+ref: 
+http://stackoverflow.com/questions/7527459/android-device-screen-size
