@@ -179,7 +179,7 @@ can add one key collect through add Prefernce in Setting app. [Preference -> set
         }
     });
 note: 
-a. 7za is a utility for 7zip under linux, binary can get from http://forum.xda-developers.com/showthread.php?t=856415
+a. 7za is an utility for 7zip under linux, binary can get from http://forum.xda-developers.com/showthread.php?t=856415
 b. Process interface doesn't support redirect '>' - it's shell feature. use Process getInputStream method instead.
 
 3. system information detect
