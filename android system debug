@@ -16,6 +16,7 @@ http://stackoverflow.com/questions/11201659/whats-the-android-adb-shell-dumpsys-
 The tombstone contains the same information as the crash dump, plus a few extras. For example, it includes backtraces for all threads (not just the crashing thread), the floating point registers, raw stack dumps, and memory dumps around the addresses in registers.
 debuggerd will keep up to 10 tombstones, cycling through the numbers 00 to 09 and overwriting existing tombstones as necessary.
 target directory is : /data/tombstones/*, need root access permission.
+
 decrypt crash backtrace to filename and specific code line?
 a. must sure there is a debug AOSP build for symbols, and the tombstone was generated with this AOSP build image.
 b. install ndk and run command like: ndk-stack -sym $symbols_dir -dump $tombstone_file . optionally can use addr2line.
@@ -29,6 +30,157 @@ https://source.android.com/devices/tech/debug/
 http://bytesthink.com/blog/?p=133
 https://developer.android.com/ndk/downloads/index.html
 http://blog.sina.com.cn/s/blog_702c2db50102vc2h.html
+
+manually trigger a tombstone generate?
+segfault.c 
+#include <stdio.h>
+int main()
+{
+    int *p = 0;
+    printf("triggering segfault (tombstone in android)\n");
+    *p = 1;
+    return 0;
+}
+refer to $aosp/frameworks/base/cmds/screencap on compiling.
+
+let tombstone files access in release build through adb shell?
+$aosp/system/core/debuggerd/tombstone.cpp
+engrave_tombstone -> chown -> AID_SYSTEM -> AID_SHELL
+                  -> find_and_open_tombstone -> fchown -> AID_SYSTEM -> AID_SHELL
+
+collect tombstone/logcat/dmesg etc logs to internal sdcard as encrypted compressed zip?
+can add one key collect through add Prefernce in Setting app. [Preference -> setOnPreferenceClickListener()]
+    Preference copyLogPref = screen.findPreference(COPY_CRASH_LOGS);
+    copyLogPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+        public boolean onPreferenceClick(Preference pref) {
+            Log.v(TAG, "collect log click event detected @ " + System.currentTimeMillis());
+            if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                final File tombSrcFile = new File("/data/tombstones");
+                final File rootDstFile = new File("/data/.logcollect");
+
+                if (rootDstFile.exists()) deleteRecursive(rootDstFile);
+
+                // dump tombstone (if exist)
+                if (tombSrcFile.exists()) {
+                    try {
+                        Log.v(TAG, "copy log - tombstones.");
+                        copyDirectory(tombSrcFile, rootDstFile);
+                    } catch (IOException e) {
+                        Log.e(TAG, "copy log ioexception, make sure usb cable plug-out.");
+                        if (toast != null) toast.cancel();
+                        toast = Toast.makeText(getActivity(), R.string.dump_log_sdcard_err_unmount_msg, Toast.LENGTH_SHORT);
+                        toast.show();
+                        return true;
+                    }
+                } else {
+                    Log.v(TAG, "copy log - no tombstones.");
+                    rootDstFile.mkdirs();
+                }
+
+                // dump current logcat
+                File dstFile = new File(rootDstFile + File.separator + "logcat.log");
+                if (dstFile.exists()) dstFile.delete();
+                try {
+                    Log.v(TAG, "copy log - logcat.");
+                    Runtime.getRuntime().exec("logcat -v time -df " + dstFile.getAbsolutePath()).waitFor();
+                } catch (Exception e) {
+                    Log.w(TAG, "copy log failed in dump logcat log.");
+                }
+
+                // dump current dmesg
+                dstFile = new File(rootDstFile + File.separator + "dmesg.log");
+                if (dstFile.exists()) dstFile.delete();
+                try {
+                    Log.v(TAG, "copy log - dmesg.");
+                    ProcessBuilder builder = new ProcessBuilder("dmesg");
+                    java.lang.Process p = builder.start();
+                    InputStream in = p.getInputStream();
+                    OutputStream out = new FileOutputStream(dstFile);
+                    byte[] buffer = new byte[1024];
+                    int read = 0;
+                    while((read = in.read(buffer)) != -1) {
+                        out.write(buffer, 0, read);
+                    }
+                } catch (Exception e) {
+                    Log.w(TAG, "copy log failed in dump dmesg log.");
+                }
+
+                // dump last_kmsg
+                dstFile = new File(rootDstFile + File.separator + "lastkmsg.log");
+                if (dstFile.exists()) dstFile.delete();
+                try {
+                    Log.v(TAG, "copy log - last_kmsg.");
+                    ProcessBuilder builder = new ProcessBuilder("cat", "/proc/last_kmsg");
+                    java.lang.Process p = builder.start();
+                    InputStream in = p.getInputStream();
+                    OutputStream out = new FileOutputStream(dstFile);
+                    byte[] buffer = new byte[1024];
+                    int read = 0;
+                    while((read = in.read(buffer)) != -1) {
+                        out.write(buffer, 0, read);
+                    }
+                } catch (Exception e) {
+                    Log.w(TAG, "copy log failed in dump last_kmsg log.");
+                }
+
+                // dump dumpsys
+                dstFile = new File(rootDstFile + File.separator + "dumpsys.log");
+                if (dstFile.exists()) dstFile.delete();
+                try {
+                    Log.v(TAG, "copy log - dumpsys.");
+                    ProcessBuilder builder = new ProcessBuilder("dumpsys");
+                    java.lang.Process p = builder.start();
+                    InputStream in = p.getInputStream();
+                    OutputStream out = new FileOutputStream(dstFile);
+                    byte[] buffer = new byte[1024];
+                    int read = 0;
+                    while((read = in.read(buffer)) != -1) {
+                        out.write(buffer, 0, read);
+                    }
+                } catch (Exception e) {
+                    Log.w(TAG, "copy log failed in dump dumpsys log.");
+                }
+
+                // dump cache-recovery
+                dstFile = new File(rootDstFile + File.separator + "cache-recovery");
+                final File cacheFile = new File("/cache/recovery");
+                try {
+                    Log.v(TAG, "copy log - cache/recovery.");
+                    Runtime.getRuntime().exec("cp -rf " + cacheFile.getAbsolutePath() + " " + dstFile.getAbsolutePath()).waitFor();
+                } catch (Exception e) {
+                    Log.w(TAG, "copy log failed in dump cache-recovery log.");
+                }
+
+                // compress the data
+                dstFile = new File(Environment.getExternalStorageDirectory() + File.separator + "fulllogs.zip");
+                if (dstFile.exists()) dstFile.delete();
+                try {
+                    Log.v(TAG, "copy log - compress.");
+                    Runtime.getRuntime().exec("7za a -tzip -p123456 " + dstFile.getAbsolutePath() + " " + rootDstFile.getAbsolutePath()).waitFor();
+                } catch (Exception e) {
+                    Log.w(TAG, "copy log failed in compress logs.");
+                }
+                if (dstFile.exists()) {
+                    Log.v(TAG, "copy log - clean tmp data.");
+                    deleteRecursive(rootDstFile);
+                }
+
+                if (toast != null) toast.cancel();
+                toast = Toast.makeText(getActivity(), R.string.dump_log_sdcard_done_msg, Toast.LENGTH_SHORT);
+                toast.show();
+            } else {
+                Log.w(TAG, "copy log failed, sdcard umounted.");
+                if (toast != null) toast.cancel();
+                toast = Toast.makeText(getActivity(), R.string.dump_log_sdcard_err_unmount_msg, Toast.LENGTH_SHORT);
+                toast.show();
+            }
+            Log.v(TAG, "copy log done @ " + System.currentTimeMillis());
+            return true;
+        }
+    });
+note: 
+a. 7za is a utility for 7zip under linux, binary can get from http://forum.xda-developers.com/showthread.php?t=856415
+b. Process interface doesn't support redirect '>' - it's shell feature. use Process getInputStream method instead.
 
 3. system information detect
 display resolution / density?
