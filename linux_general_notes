@@ -7,3 +7,6 @@ ref: https://www.ibm.com/developerworks/community/blogs/6e6f6d1b-95c3-46df-8a26-
  $ sudo adduser newme
  $ sudo usermod -aG sudo username
 ref: https://www.digitalocean.com/community/tutorials/how-to-create-a-sudo-user-on-ubuntu-quickstart 
+
+3. how to redirec to file while keep terminal output?
+ $ {cmd} 2>&1 | tee file.txt
