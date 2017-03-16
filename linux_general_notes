@@ -10,3 +10,6 @@ ref: https://www.digitalocean.com/community/tutorials/how-to-create-a-sudo-user-
 
 3. how to redirec to file while keep terminal output?
  $ {cmd} 2>&1 | tee file.txt
+
+4. how to go d driver in cygwin env?
+ > cd /cygwin/d
