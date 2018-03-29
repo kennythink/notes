@@ -16,5 +16,5 @@ ref: http://stackoverflow.com/questions/428109/extract-substring-in-bash
 $ rename -v 's/old_string/new_string/' *  ## if only trial run,  with '-n' parameter
 ref: http://askubuntu.com/questions/283145/pattern-based-batch-file-rename-in-terminal
 
-3. grep certain type files on certain content?
-$ grep --include \*.java -r 'search_me' .
+3. grep certain type files on certain content, and match each file once?
+$ grep --include \*.java -m1 -r 'search_me' .
