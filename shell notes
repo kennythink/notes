@@ -15,3 +15,6 @@ ref: http://stackoverflow.com/questions/428109/extract-substring-in-bash
 2. how to batch rename file with specific string?
 $ rename -v 's/old_string/new_string/' *  ## if only trial run,  with '-n' parameter
 ref: http://askubuntu.com/questions/283145/pattern-based-batch-file-rename-in-terminal
+
+3. grep certain type files on certain content?
+$ grep --include \*.java -r 'search_me' .
