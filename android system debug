@@ -17,7 +17,7 @@ The tombstone contains the same information as the crash dump, plus a few extras
 debuggerd will keep up to 10 tombstones, cycling through the numbers 00 to 09 and overwriting existing tombstones as necessary.
 target directory is : /data/tombstones/*, need root access permission.
 
-decrypt crash backtrace to filename and specific code line?
+3. decrypt crash backtrace to filename and specific code line?
 a. must sure there is a debug AOSP build for symbols, and the tombstone was generated with this AOSP build image.
 b. install ndk and run command like: ndk-stack -sym $symbols_dir -dump $tombstone_file . optionally can use addr2line.
     $ ndk-stack -sym $aosp_path/out/target/product/$product/symbols/system/lib -dump tombstone.txt
@@ -31,7 +31,7 @@ http://bytesthink.com/blog/?p=133
 https://developer.android.com/ndk/downloads/index.html
 http://blog.sina.com.cn/s/blog_702c2db50102vc2h.html
 
-manually trigger a tombstone generate?
+4. manually trigger a tombstone generate?
 segfault.c 
 #include <stdio.h>
 int main()
@@ -43,12 +43,12 @@ int main()
 }
 refer to $aosp/frameworks/base/cmds/screencap on compiling.
 
-let tombstone files access in release build through adb shell?
+5. let tombstone files access in release build through adb shell?
 $aosp/system/core/debuggerd/tombstone.cpp
 engrave_tombstone -> chown -> AID_SYSTEM -> AID_SHELL
                   -> find_and_open_tombstone -> fchown -> AID_SYSTEM -> AID_SHELL
 
-collect tombstone/logcat/dmesg etc logs to internal sdcard as encrypted compressed zip?
+6. collect tombstone/logcat/dmesg etc logs to internal sdcard as encrypted compressed zip?
 can add one key collect through add Prefernce in Setting app. [Preference -> setOnPreferenceClickListener()]
     Preference copyLogPref = screen.findPreference(COPY_CRASH_LOGS);
     copyLogPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -182,7 +182,7 @@ note:
 a. 7za is an utility for 7zip under linux, binary can get from http://forum.xda-developers.com/showthread.php?t=856415
 b. Process interface doesn't support redirect '>' - it's shell feature. use Process getInputStream method instead.
 
-3. system information detect
+7. system information detect
 display resolution / density?
 resolution: 
     > adb shell wm size
