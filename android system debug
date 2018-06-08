@@ -192,3 +192,7 @@ density: dp = (density / 160 ) * px
     > adb shell getprop | findstr lcd
 ref: 
 http://stackoverflow.com/questions/7527459/android-device-screen-size
+
+8. print offset of nested structure?
+printf("%p\n", &((struct s *)NULL)->i);
+ref: https://stackoverflow.com/questions/18749349/finding-offset-of-a-structure-element-in-c
