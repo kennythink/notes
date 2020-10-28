@@ -1,0 +1,6 @@
+how to convert jpg to uv12 format?
+ ffmpeg -y -i image.jpg -pix_fmt nv12 out.yuv
+ https://superuser.com/questions/1543703/ffmpeg-cant-convert-jpg-to-yuv-nv12 
+ 
+how to convert uv12 to jpg format?
+http://www.xiamiworks.com/miscellaneous/yuv2image/
