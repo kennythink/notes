@@ -5,3 +5,7 @@ how to convert jpg to uv12 format?
  
 how to convert uv12 to jpg format?
 http://www.xiamiworks.com/miscellaneous/yuv2image/
+
+how to generate empty image?
+convert -size 32x32 xc:blue empty.jpg
+https://superuser.com/questions/294943/is-there-a-utility-to-create-blank-images
