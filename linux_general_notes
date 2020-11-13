@@ -13,3 +13,11 @@ ref: https://www.digitalocean.com/community/tutorials/how-to-create-a-sudo-user-
 
 4. how to go d driver in cygwin env?
  > cd /cygwin/d
+ 
+5. why can't get man for c lib function like write/open?
+ > apt-get install manpages-dev
+ > apt-get install manpages-posix-dev
+ then try
+ > man 3 write
+ ref: https://superuser.com/questions/40609/how-to-install-man-pages-for-c-standard-library-functions-in-ubuntu
+ 
